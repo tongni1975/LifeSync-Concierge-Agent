@@ -24,7 +24,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1xPUt1iTWOaA-wxVV6zwQVu
 
 # LifeSync Concierge - Project Writeup
 
-## Category 1: The Pitch
+## The Pitch
 
 ### Core Concept & Value
 LifeSync Concierge is a browser-based "Operating System" for personal health. It moves beyond simple tracking by using an **Orchestrator Agent** to synthesize disparate data points—diet, heart rate, and mood—into actionable, holistic advice. Its core value lies in **Contextual Intelligence**: it doesn't just log data; it understands how your lunch impacts your workout and how your stress levels should dictate your recovery.
@@ -35,7 +35,7 @@ Health data is fragmented. We track calories in one app, workouts in another, an
 ### The Solution
 A local-first web app powered by a **Multi-Agent Gemini System**. By deploying specialized agents (Nutritionist, Trainer, Wellness Coach) that share a common memory bank, LifeSync offers the guidance of a full medical team. It runs offline-capable logic where possible and uses the Gemini API for complex reasoning, ensuring a fast, privacy-conscious experience.
 
-## Category 2: The Implementation
+## The Implementation
 
 ### Technical Architecture
 ```
