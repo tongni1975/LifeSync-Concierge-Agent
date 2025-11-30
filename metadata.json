@@ -1,0 +1,7 @@
+{
+  "name": "LifeSync Concierge Agent",
+  "description": "A privacy-first, local-memory health and wellness concierge powered by a multi-agent Gemini system. Tracks vitals, mood, and nutrition while providing personalized video recommendations and motivation.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
