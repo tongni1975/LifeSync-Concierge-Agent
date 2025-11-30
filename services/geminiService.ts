@@ -20,6 +20,54 @@ class AgentService {
   }
 
   /**
+   * Generates a creative thumbnail image for the application using Gemini Image Generation.
+   */
+  async generateThumbnail(): Promise<string | null> {
+    const prompt = `
+      A cinematic, high-tech 3D isometric illustration of the "LifeSync Concierge" health app.
+      
+      Visual elements:
+      1. A central glowing AI core (representing the Orchestrator Agent).
+      2. Floating holographic data screens showing Heart Rate graphs (red), Nutrition info with an apple icon (green), and a Zen/Meditation symbol (purple).
+      3. A sleek, modern dashboard interface in the background.
+      
+      Style: Cyberpunk meets Clean Health Tech. 
+      Lighting: Neon accents in Indigo, Emerald, and Violet against a deep slate background. 
+      Quality: 8k resolution, highly detailed, photorealistic rendering, trending on ArtStation.
+    `;
+
+    try {
+      // Using gemini-2.5-flash-image for general image generation
+      // Configured for 16:9 aspect ratio to ensure dimensions > 560x280
+      const response = await this.ai.models.generateContent({
+        model: 'gemini-2.5-flash-image',
+        contents: {
+          parts: [{ text: prompt }]
+        },
+        config: {
+          imageConfig: {
+            aspectRatio: '16:9'
+          }
+        }
+      });
+
+      // Iterate through parts to find the image
+      const candidates = response.candidates;
+      if (candidates && candidates.length > 0) {
+        for (const part of candidates[0].content.parts) {
+          if (part.inlineData) {
+            return `data:image/png;base64,${part.inlineData.data}`;
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      console.error("Error generating thumbnail", e);
+      return null;
+    }
+  }
+
+  /**
    * Estimates calories for a given food description using the Nutritionist Persona.
    */
   async estimateCalories(foodDescription: string): Promise<{ calories: number; details: string }> {
