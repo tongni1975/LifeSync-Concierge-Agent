@@ -90,6 +90,23 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ userProfile, history }) =
              const data = JSON.parse(match[1]);
              const cleanText = msg.content.replace(match[0], '').trim();
              
+             // Safely handle potential non-string values from LLM
+             const itemText = typeof data.item === 'string' ? data.item : 'Nutritional Info';
+             
+             let macrosText = '';
+             if (data.macros) {
+                if (typeof data.macros === 'string') {
+                    macrosText = data.macros;
+                } else if (typeof data.macros === 'object') {
+                    // Flatten object if LLM returns { protein: '10g', ... }
+                    macrosText = Object.entries(data.macros)
+                        .map(([k, v]) => `${k}: ${v}`)
+                        .join(', ');
+                } else {
+                    macrosText = String(data.macros);
+                }
+             }
+
              return (
                <div className="space-y-3">
                  <div className="bg-gradient-to-r from-emerald-50 to-green-50 p-4 rounded-xl border border-green-100 shadow-sm relative overflow-hidden">
@@ -97,12 +114,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ userProfile, history }) =
                         <span className="text-4xl">🍎</span>
                     </div>
                     <div className="relative z-10">
-                        <h4 className="text-sm font-bold text-emerald-800 uppercase tracking-wide mb-2">{data.item || 'Nutritional Info'}</h4>
+                        <h4 className="text-sm font-bold text-emerald-800 uppercase tracking-wide mb-2">{itemText}</h4>
                         <div className="flex flex-wrap items-end gap-3">
-                            <span className="text-3xl font-bold text-emerald-600">{data.calories}<span className="text-base font-medium text-emerald-500 ml-1">kcal</span></span>
-                            {data.macros && (
+                            <span className="text-3xl font-bold text-emerald-600">{Number(data.calories) || 0}<span className="text-base font-medium text-emerald-500 ml-1">kcal</span></span>
+                            {macrosText && (
                                 <div className="text-xs font-medium text-emerald-700 bg-white/60 px-2 py-1 rounded-md border border-emerald-100">
-                                   {data.macros}
+                                   {macrosText}
                                 </div>
                             )}
                         </div>
@@ -112,6 +129,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ userProfile, history }) =
                </div>
              );
           } catch (e) {
+             console.error("Failed to parse nutrition block", e);
              // Fallback if JSON parse fails
              return <div className="whitespace-pre-wrap leading-relaxed">{msg.content}</div>;
           }
